@@ -13,9 +13,6 @@
 			}
 		},
 		onLoad () {
-			let curRoute  = this.$mp;
-			let curPage = getCurrentPages();
-			console.log('加载页面', curRoute, curPage);
 		},
 		methods: {
 

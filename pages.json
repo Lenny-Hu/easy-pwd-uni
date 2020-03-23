@@ -6,10 +6,7 @@
 		}
 		,{
 			"path" : "pages/about/index",
-			"style" : {},
-			"meta": {
-				"name": "about"
-			}
+			"style" : {}
 		}
 	],
 	"globalStyle": {

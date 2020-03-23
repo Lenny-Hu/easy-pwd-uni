@@ -4,9 +4,9 @@
 		<view class="cu-bar tabbar bg-white shadow foot">
 			<view class="action" v-for="(item, i) in tabList" :key="i" @click="goto(item)">
 				<view class="cuIcon-cu-image">
-					<text class="lg" :class="[`cuIcon-${item.icon}`, selected.tab == item.name ? 'text-green' : 'text-gray']"></text>
+					<text class="lg" :class="[`cuIcon-${item.icon}`, selected.tab == item.path ? 'text-green' : 'text-gray']"></text>
 				</view>
-				<view :class="selected.tab == item.name ? 'text-green' : 'text-gray'">{{item.title}}</view>
+				<view :class="selected.tab == item.path ? 'text-green' : 'text-gray'">{{routemap[item.path].title}}</view>
 			</view>
 		</view>
 	</view>
@@ -14,22 +14,20 @@
 
 <script>
 	import routemap from '@/routemap.js';
+	import utils from '@/helpers/utils';
 	export default {
 		data () {
 			return {
 				selected: {
-					tab: 'home'
+					tab: ''
 				},
+				routemap,
 				tabList: [
 					{
-						name: 'home',
-						title: '首页',
-						path: '/',
+						path: '/pages/index/index',
 						icon: 'home'
 					},
 					{
-						name: 'about',
-						title: '关于',
 						path: '/pages/about/index',
 						icon: 'profile'
 					}
@@ -37,16 +35,19 @@
 			};
 		},
 		methods: {
+			emitTitle () {
+				uni.$emit('update-title', { title: routemap[this.selected.tab].title });
+			},
 			goto (item) {
-				console.log(item);
 				uni.navigateTo({
 					url: item.path
 				});
 			}
 		},
 		created () {
-			// this.navList = routemap;
-			console.log('加载底部导航', uni);
+			let { curPage } = utils.getCurpage();
+			this.selected.tab = `/${curPage.route}`;
+			this.emitTitle();
 		}
 	}
 </script>
