@@ -1,5 +1,5 @@
 <template>
-	<view class="page">
+	<view class="page-index">
 		<c-navbar></c-navbar>
 		<view class="cu-form-group margin-top">
 			<view class="title">类型</view>
