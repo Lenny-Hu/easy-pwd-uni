@@ -43,7 +43,6 @@
 				</view>
 			</view>
 		</view>
-		
 		<c-tabbar></c-tabbar>
 	</view>
 </template>
@@ -113,6 +112,7 @@
 				let _p = `${this.form.pwd}${this.form.hash}`;
 				let res = sha256(_p).toString();
 				let _selected = this.typeList[this.selected.type];
+				let _this = this;
 				
 				switch (_selected.value) {
 					case 10:
@@ -138,10 +138,10 @@
 				uni.setClipboardData({
 					data: res,
 					success () {
-						this.showModal(`密码 ${res} 已复制到粘贴板`);
+						_this.showModal(`密码 ${res} 已复制到粘贴板`);
 					},
 					fail () {
-						this.showModal(`密码 ${res} 复制到粘贴板失败`);
+						_this.showModal(`密码 ${res} 复制到粘贴板失败`);
 					}
 				});
 				//#endif
