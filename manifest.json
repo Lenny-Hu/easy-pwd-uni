@@ -1,5 +1,5 @@
 {
-    "name" : "easy-pwd",
+    "name" : "密码包",
     "appid" : "__UNI__A1D9618",
     "description" : "",
     "versionName" : "1.0.0",
@@ -57,7 +57,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wx44f42efa1b6c7349",
         "setting" : {
             "urlCheck" : false
         },

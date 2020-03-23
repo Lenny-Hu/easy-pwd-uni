@@ -39,7 +39,7 @@
 				uni.$emit('update-title', { title: routemap[this.selected.tab].title });
 			},
 			goto (item) {
-				uni.navigateTo({
+				uni.redirectTo({
 					url: item.path
 				});
 			}
