@@ -1,6 +1,5 @@
 <template>
 	<view class="page-index">
-		<c-navbar></c-navbar>
 		<view class="cu-form-group margin-top">
 			<view class="title">类型</view>
 			<picker @change="typeChange" :value="selected.type" :range="typeList" range-key="title">
@@ -43,7 +42,6 @@
 				</view>
 			</view>
 		</view>
-		<c-tabbar></c-tabbar>
 	</view>
 </template>
 

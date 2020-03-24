@@ -2,17 +2,42 @@
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
-			"style": {}
-		}
-		,{
-			"path" : "pages/about/index",
-			"style" : {}
+			"style": {
+				"navigationBarTitleText": "首 页"
+			}
+		}, {
+			"path": "pages/about/index",
+			"style": {
+				"navigationBarTitleText": "关 于"
+			}
 		}
 	],
 	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "演示",
 		"navigationBarBackgroundColor": "#0081ff",
-		"navigationBarTitleText": "密码包",
-		"navigationStyle": "custom",
-		"navigationBarTextStyle": "white"
+		"backgroundColor": "#F8F8F8",
+		"pageOrientation": "portrait" //横屏配置，全局屏幕旋转设置(仅 APP/微信/QQ小程序)，支持 auto / portrait / landscape
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#3cc51f",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"height": "50px",
+		"fontSize": "10px",
+		"iconWidth": "24px",
+		"spacing": "3px",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/images/tab/home.png",
+			"selectedIconPath": "static/images/tab/home-active.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/about/index",
+			"iconPath": "static/images/tab/about.png",
+			"selectedIconPath": "static/images/tab/about-active.png",
+			"text": "关于"
+		}]
 	}
 }
