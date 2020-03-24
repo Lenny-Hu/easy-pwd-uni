@@ -24,10 +24,6 @@
 		"selectedColor": "#3cc51f",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
-		"height": "50px",
-		"fontSize": "10px",
-		"iconWidth": "24px",
-		"spacing": "3px",
 		"list": [{
 			"pagePath": "pages/index/index",
 			"iconPath": "static/images/tab/home.png",
