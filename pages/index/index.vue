@@ -15,7 +15,7 @@
 		</view>
 		<view class="cu-form-group">
 			<view class="title">盐</view>
-			<input placeholder="加点盐,生成更安全的密码" :password="iptType.hash" v-model.trim="form.hash"></input>
+			<input placeholder="网站/应用/用途的名称" :password="iptType.hash" v-model.trim="form.hash"></input>
 			<text class='text-orange' :class="iptType.hash ? 'cuIcon-attentionforbidfill' : 'cuIcon-attentionfill'" @tap="switchIptType('hash')"></text>
 		</view>
 		<view class="cu-form-group">
