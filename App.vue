@@ -28,6 +28,7 @@ export default {
 	onShow: function() {
 	},
 	onHide: function() {
+		Vue.prototype.soterAuthFlag = false;
 	}
 };
 </script>

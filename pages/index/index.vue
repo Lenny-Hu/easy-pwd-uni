@@ -46,9 +46,11 @@
 </template>
 
 <script>
+	import Vue from 'vue';
 	import sha256 from 'crypto-js/sha256';
+	import utils from '@/helpers/utils.js';
 	export default {
-		data() {
+		data () {
 			return {
 				modal: {
 					show: false,
@@ -84,6 +86,12 @@
 		},
 		onLoad () {
 		},
+		onHide () {
+			// 界面隐藏时，将密码输入框切换为密文状态
+			Object.keys(this.iptType).forEach((k) => {
+				this.iptType[k] = true;
+			});
+		},
 		methods: {
 			showModal (content) {
 				this.modal.show = true;
@@ -99,19 +107,19 @@
 			switchFlag (e) {
 				this.selected.flag = e.detail.value;
 			},
-			switchIptType (name) {
+			async switchIptType (name) {
+				// app 和 微信启用生物认证
+				//#ifdef APP-PLUS || MP-WEIXIN
+				await this.soterAuth();
+				//#endif
+	
 				this.iptType[name] = !this.iptType[name];
 			},
-			generate () {
-				if (!(this.form.pwd && this.form.hash)) {
-					return this.showModal(`请输入密码 & 盐`);
-				}
-				
+			generatePwd () {
 				let _p = `${this.form.pwd}${this.form.hash}`;
 				let res = sha256(_p).toString();
 				let _selected = this.typeList[this.selected.type];
-				let _this = this;
-				
+	
 				switch (_selected.value) {
 					case 10:
 						res = res.slice(0, _selected.value);
@@ -131,21 +139,57 @@
 				if (this.selected.flag) {
 					res = `_${res}_`;
 				}
+				return res;
+			},
+			async soterAuth () {
+				return new Promise(async (resolve, reject) => {
+					// 如果已经认证过一次，无需再次认证
+					if (Vue.prototype.soterAuthFlag) {
+						return resolve(); 
+					}
+					
+					try {
+						await utils.soterAuth();
+						// 认证通过设置标识
+						Vue.prototype.soterAuthFlag = true;
+					} catch (err) {
+						this.showModal(err);
+						return reject();
+					}
+					return resolve();
+				});
+			},
+			async generate () {
+				if (!(this.form.pwd && this.form.hash)) {
+					return this.showModal(`请输入密码 & 盐`);
+				}
+				let newPwd = this.generatePwd();
+				let _this = this;
+				
+				// app 和 微信启用生物认证
+				//#ifdef APP-PLUS || MP-WEIXIN
+				await this.soterAuth();
+				//#endif
+				
+				this.showPwd(newPwd);
+			},
+			showPwd (pwd) {
+				let _this = this;
 				
 				//#ifndef H5
 				uni.setClipboardData({
-					data: res,
+					data: pwd,
 					success () {
-						_this.showModal(`密码 ${res} 已复制到粘贴板`);
+						_this.showModal(`密码 ${pwd} 已复制到粘贴板`);
 					},
 					fail () {
-						_this.showModal(`密码 ${res} 复制到粘贴板失败`);
+						_this.showModal(`密码 ${pwd} 复制到粘贴板失败`);
 					}
 				});
 				//#endif
 				
 				//#ifdef H5
-				this.showModal(res);
+				this.showModal(pwd);
 				//#endif
 			}
 		}
