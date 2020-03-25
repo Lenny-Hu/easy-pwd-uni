@@ -34,7 +34,7 @@
 						<text class="cuIcon-close text-red"></text>
 					</view>
 				</view>
-				<view class="padding-xl">
+				<view class="padding-xl modal-content">
 					{{modal.content}}
 				</view>
 				<view class="cu-bar bg-white">
@@ -88,11 +88,18 @@
 		},
 		onHide () {
 			// 界面隐藏时，将密码输入框切换为密文状态
-			Object.keys(this.iptType).forEach((k) => {
-				this.iptType[k] = true;
-			});
+			this.hideIpt();
+		},
+		onShareAppMessage (res) {
+			this.hideIpt();
+			utils.onShareAppMessage(res);
 		},
 		methods: {
+			hideIpt () {
+				Object.keys(this.iptType).forEach((k) => {
+					this.iptType[k] = true;
+				});
+			},
 			showModal (content) {
 				this.modal.show = true;
 				this.modal.content = content;
@@ -197,5 +204,17 @@
 </script>
 
 <style lang="scss">
-
+.page-index {
+	.cu-form-group {
+		.title {
+			min-width: 90rpx;
+		}
+	}
+	
+	.cu-dialog {
+		.modal-content {
+			word-break: break-all;
+		}
+	}
+}
 </style>

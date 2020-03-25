@@ -100,5 +100,11 @@ export default {
 			
 			return resolve();
 		});
+	},
+	onShareAppMessage (res) {
+		return {
+			title: '密码包-简单可靠的密码生成器',
+			path: '/pages/index/index'
+		}
 	}
 };

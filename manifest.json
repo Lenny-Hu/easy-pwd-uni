@@ -2,7 +2,7 @@
     "name" : "密码包",
     "appid" : "__UNI__A1D9618",
     "description" : "简单可靠的密码生成器，不记录你输入的任何内容。",
-    "versionName" : "1.1.0",
+    "versionName" : "1.1.1",
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
