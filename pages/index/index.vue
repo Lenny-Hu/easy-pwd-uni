@@ -36,6 +36,9 @@
 				</view>
 				<view class="padding-xl modal-content">
 					{{modal.content}}
+					<!--  #ifdef  H5 -->
+					<input type="text" :value="newPwd" ref="newPwdIpt" focus class="modal-content__ipt"/>
+					<!--  #endif -->
 				</view>
 				<view class="cu-bar bg-white">
 					<view class="action margin-0 flex-sub text-green solid-left" @tap="hideModal">确定</view>
@@ -81,7 +84,8 @@
 						title: '全部',
 						value: 0
 					}
-				]
+				],
+				newPwd: ''
 			}
 		},
 		onLoad () {
@@ -170,7 +174,7 @@
 				if (!(this.form.pwd && this.form.hash)) {
 					return this.showModal(`请输入密码 & 盐`);
 				}
-				let newPwd = this.generatePwd();
+				let newPwd = this.newPwd = this.generatePwd();
 				let _this = this;
 				
 				// app 和 微信启用生物认证
@@ -196,7 +200,11 @@
 				//#endif
 				
 				//#ifdef H5
-				this.showModal(pwd);
+				_this.showModal(`密码 ${pwd} 已复制到粘贴板`);
+				setTimeout(() => {
+					_this.$refs.newPwdIpt.$refs.input.select();
+					document.execCommand('Copy');
+				}, 150);
 				//#endif
 			}
 		}
@@ -213,7 +221,15 @@
 	
 	.cu-dialog {
 		.modal-content {
+			position: relative;
 			word-break: break-all;
+			
+			&__ipt {
+				position: absolute;
+				left: 0;
+				top: 0;
+				opacity: 0;
+			}
 		}
 	}
 }
