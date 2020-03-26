@@ -100,7 +100,7 @@
     "h5" : {
         "router" : {
             "mode" : "hash",
-            "base" : ""
+            "base" : "/easy-pwd-uni/"
         },
         "devServer" : {
             "https" : false
