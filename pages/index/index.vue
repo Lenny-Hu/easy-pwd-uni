@@ -1,6 +1,14 @@
 <template>
 	<view class="page-index">
 		<view class="cu-form-group margin-top">
+			<view class="title">快速</view>
+			<radio-group name="radio"  @change="typeChange">
+				<label v-for="(ite, i) in typeList" :key="i" v-show="ite.label" class="margin-left">
+					<radio :value="i.toString()" :checked="i === selected.type" /><text class="margin-left-xs">{{ite.label}}</text>
+				</label>
+			</radio-group>
+		</view>
+		<view class="cu-form-group">
 			<view class="title">类型</view>
 			<picker @change="typeChange" :value="selected.type" :range="typeList" range-key="title">
 				<view class="picker">
@@ -73,20 +81,43 @@
 				},
 				typeList: [
 					{
+						label: '通用',
 						title: '前十位(首个字母大写)',
 						value: 10
 					},
 					{
+						label: '六位',
+						title: '后六位数字',
+						value: -6
+					},
+					{
+						label: '八位',
+						title: '中间八位数字',
+						value: 8
+					},
+					{
+						label: '',
 						title: '前六位数字',
 						value: 6
 					},
 					{
+						label: '',
 						title: '全部',
 						value: 0
 					}
 				],
 				newPwd: ''
 			}
+		},
+		onReady () {
+			uni.getStorage({
+				key: 'type',
+				success: (res) => {
+					if (res.data >= 0) {
+						this.selected.type = +res.data;
+					}
+				}
+			});
 		},
 		onLoad () {
 		},
@@ -113,7 +144,13 @@
 				this.modal.show = false;
 			},
 			typeChange (e) {
-				this.selected.type = e.detail.value;
+				this.selected.type = parseInt(e.detail.value);
+				
+				// 保存快速选项
+				uni.setStorage({
+					key: 'type',
+					data: this.selected.type,
+				});
 			},
 			switchFlag (e) {
 				this.selected.flag = e.detail.value;
@@ -130,10 +167,11 @@
 				let _p = `${this.form.pwd}${this.form.hash}`;
 				let res = sha256(_p).toString();
 				let _selected = this.typeList[this.selected.type];
+				let n = _selected.value;
 	
-				switch (_selected.value) {
+				switch (n) {
 					case 10:
-						res = res.slice(0, _selected.value);
+						res = res.slice(0, n);
 						let findRes = res.match(/[a-z]/);
 						let arr = res.split('');
 						arr[findRes.index] = arr[findRes.index].toUpperCase();
@@ -141,7 +179,22 @@
 						break;
 						
 					case 6:
-						res = res.match(/\d/g).slice(0, _selected.value).join('');
+						let map = {};
+						
+						res = res.match(/\d/g).slice(0, n).join('');
+						break;
+						
+					case -6:
+						res = res.match(/\d/g).slice(n).join('');
+						break;
+						
+					case 8:
+						let _arr = res.match(/\d/g);
+						let middle = Math.floor(_arr.length / 2);
+						let start = middle - 4;
+						let end = middle + 4;
+						
+						res = _arr.slice(start, end).join('');
 						break;
 						
 					default:
@@ -186,21 +239,22 @@
 			},
 			showPwd (pwd) {
 				let _this = this;
+				let desc = pwd.length > 6 ? (pwd.slice(0, pwd.length / 2) + ' ' + pwd.slice(pwd.length / 2)) : pwd;
 				
 				//#ifndef H5
 				uni.setClipboardData({
 					data: pwd,
 					success () {
-						_this.showModal(`密码 ${pwd} 已复制到粘贴板`);
+						_this.showModal(`密码 ${desc} 已复制到粘贴板`);
 					},
 					fail () {
-						_this.showModal(`密码 ${pwd} 复制到粘贴板失败`);
+						_this.showModal(`密码 ${desc} 复制到粘贴板失败`);
 					}
 				});
 				//#endif
 				
 				//#ifdef H5
-				_this.showModal(`密码 ${pwd} 已复制到粘贴板`);
+				_this.showModal(`密码 ${desc} 已复制到粘贴板`);
 				setTimeout(() => {
 					_this.$refs.newPwdIpt.$refs.input.select();
 					document.execCommand('Copy');

@@ -4,7 +4,7 @@
 			<view class='padding text-center logo'>
 				<image class="logo-image" src="../../static/logo.png" mode="aspectFill"></image>
 			</view>
-		  <view class='text-center margin-bottom text-lg text-grey'>密码包 v1.1.1</view>
+		  <view class='text-center margin-bottom text-lg text-grey'>密码包 v1.1.2</view>
 		  <view class='text-center margin-bottom text-lg text-blue'>简单可靠的密码生成器</view>
 			<view class='text-content'>
 				<view class='margin-top-sm'>多个网站/应用共用一个密码存在很大的安全风险，太多的密码又记不住，使用无输入的密码生成方案时，存在着密码文件丢失，过度依赖方案工具的问题。密码包提供的方案具有以下特点：</view>
