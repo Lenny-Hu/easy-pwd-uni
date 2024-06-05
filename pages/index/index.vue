@@ -27,7 +27,11 @@
 			<text class='text-orange' :class="iptType.hash ? 'cuIcon-attentionforbidfill' : 'cuIcon-attentionfill'" @tap="switchIptType('hash')"></text>
 		</view>
 		<view class="cu-form-group">
-			<view class="title">添加特殊字符</view>
+			<view class="title">添加年份({{year}})</view>
+			<switch @change="switchYear" :class="selected.year ? 'checked' : ''" :checked="selected.year"></switch>
+		</view>
+		<view class="cu-form-group">
+			<view class="title">添加特殊字符(_)</view>
 			<switch @change="switchFlag" :class="selected.flag ? 'checked' : ''" :checked="selected.flag"></switch>
 		</view>
 		<view class="padding flex flex-direction">
@@ -43,7 +47,7 @@
 					</view>
 				</view>
 				<view class="padding-xl modal-content">
-					{{modal.content}}
+					密码 <text class="text-red text-shadow">{{modal.content}}</text>
 					<!--  #ifdef  H5 -->
 					<input type="text" :value="newPwd" ref="newPwdIpt" focus class="modal-content__ipt"/>
 					<!--  #endif -->
@@ -69,7 +73,8 @@
 				},
 				selected: {
 					type: 0,
-					flag: false
+					flag: false,
+					year: false
 				},
 				iptType: {
 					pwd: true,
@@ -106,18 +111,12 @@
 						value: 0
 					}
 				],
-				newPwd: ''
+				newPwd: '',
+				year: (new Date()).getFullYear()
 			}
 		},
 		onReady () {
-			uni.getStorage({
-				key: 'type',
-				success: (res) => {
-					if (res.data >= 0) {
-						this.selected.type = +res.data;
-					}
-				}
-			});
+			this.readConf();
 		},
 		onLoad () {
 		},
@@ -130,6 +129,37 @@
 			utils.onShareAppMessage(res);
 		},
 		methods: {
+			writeConf (k, v) {
+				uni.setStorage({
+					key: k,
+					data: v,
+				});
+			},
+			readConf () {
+				let keys = [
+					{
+						name: 'type',
+						fn (res) {
+							return res.data >= 0 ? +res.data : 0;
+						}
+					},
+					{
+						name: 'year',
+						fn (res) {
+							return String(res.data) === 'true' ? true : false;
+						}
+					},
+				];
+				
+				keys.forEach((v) => {
+					uni.getStorage({
+						key: v.name,
+						success: (res) => {
+							this.selected[v.name] = v.fn(res);
+						}
+					});
+				});
+			},
 			hideIpt () {
 				Object.keys(this.iptType).forEach((k) => {
 					this.iptType[k] = true;
@@ -145,15 +175,14 @@
 			},
 			typeChange (e) {
 				this.selected.type = parseInt(e.detail.value);
-				
-				// 保存快速选项
-				uni.setStorage({
-					key: 'type',
-					data: this.selected.type,
-				});
+				this.writeConf('type', this.selected.type);
 			},
 			switchFlag (e) {
 				this.selected.flag = e.detail.value;
+			},
+			switchYear (e) {
+				this.selected.year = e.detail.value;
+				this.writeConf('year', this.selected.year);
 			},
 			async switchIptType (name) {
 				// app 和 微信启用生物认证
@@ -165,6 +194,11 @@
 			},
 			generatePwd () {
 				let _p = `${this.form.pwd}${this.form.hash}`;
+				
+				if (this.selected.year) {
+					_p += this.year;
+				}
+	
 				let res = sha256(_p).toString();
 				let _selected = this.typeList[this.selected.type];
 				let n = _selected.value;
@@ -225,7 +259,10 @@
 			},
 			async generate () {
 				if (!(this.form.pwd && this.form.hash)) {
-					return this.showModal(`请输入密码 & 盐`);
+					return uni.showToast({
+						title: `请输入密码 & 盐`,
+						icon: 'error'
+					});
 				}
 				let newPwd = this.newPwd = this.generatePwd();
 				let _this = this;
@@ -239,27 +276,38 @@
 			},
 			showPwd (pwd) {
 				let _this = this;
-				let desc = pwd.length > 6 ? (pwd.slice(0, pwd.length / 2) + ' ' + pwd.slice(pwd.length / 2)) : pwd;
+				let len = pwd.length;
+				let desc = len > 6 ? (pwd.slice(0, len / 2) + ' ' + pwd.slice(len / 2)) : pwd;
 				
-				//#ifndef H5
 				uni.setClipboardData({
 					data: pwd,
 					success () {
-						_this.showModal(`密码 ${desc} 已复制到粘贴板`);
+						_this.showModal(`${desc}`);
 					},
 					fail () {
-						_this.showModal(`密码 ${desc} 复制到粘贴板失败`);
+						_this.showModal(`${desc} 复制到粘贴板失败`);
 					}
 				});
-				//#endif
 				
-				//#ifdef H5
-				_this.showModal(`密码 ${desc} 已复制到粘贴板`);
-				setTimeout(() => {
-					_this.$refs.newPwdIpt.$refs.input.select();
-					document.execCommand('Copy');
-				}, 150);
-				//#endif
+				// desc = `<text class="text-red text-shadow">${desc}</text>`;
+				
+				// uni.setClipboardData({
+				// 	data: pwd,
+				// 	success () {
+				// 		_this.showModal(`密码 ${desc} 已复制到粘贴板`);
+				// 	},
+				// 	fail () {
+				// 		_this.showModal(`密码 ${desc} 复制到粘贴板失败`);
+				// 	}
+				// });
+				
+				// //#ifdef H5
+				// _this.showModal(`密码 ${desc} 已复制到粘贴板`);
+				// setTimeout(() => {
+				// 	_this.$refs.newPwdIpt.$refs.input.select();
+				// 	document.execCommand('Copy');
+				// }, 150);
+				// //#endif
 			}
 		}
 	}

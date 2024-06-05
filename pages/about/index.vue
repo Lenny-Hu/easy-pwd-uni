@@ -4,7 +4,7 @@
 			<view class='padding text-center logo'>
 				<image class="logo-image" src="../../static/logo.png" mode="aspectFill"></image>
 			</view>
-		  <view class='text-center margin-bottom text-lg text-grey'>密码包 v1.1.2</view>
+		  <view class='text-center margin-bottom text-lg text-grey'>密码包 v1.1.3</view>
 		  <view class='text-center margin-bottom text-lg text-blue'>简单可靠的密码生成器</view>
 			<view class='text-content'>
 				<view class='margin-top-sm'>多个网站/应用共用一个密码存在很大的安全风险，太多的密码又记不住，使用无输入的密码生成方案时，存在着密码文件丢失，过度依赖方案工具的问题。密码包提供的方案具有以下特点：</view>
@@ -15,6 +15,8 @@
 				<view class='margin-top-sm'>* 当一个应用/网站的密码被泄漏时，不会影响其它的应用/网站，也不可能根据泄漏的密码推断出密码原文</view>
 				<view class='margin-top-sm'>* 支持生物识别认证（指纹或面容ID），保障使用期间的隐私和安全</view>
 				<view class='margin-top-sm'>* 不记录任何输入和输出</view>
+				<view class='margin-top-sm'>* 添加年份：某些需要定期修改密码的场景使用</view>
+				<view class='margin-top-sm'>* 添加特殊字符：在SHA256后的字符头尾添加固定“_”</view>
 		  </view>
 		</view>
 	</view>
