@@ -34,6 +34,10 @@
 			<view class="title">添加特殊字符(_)</view>
 			<switch @change="switchFlag" :class="selected.flag ? 'checked' : ''" :checked="selected.flag"></switch>
 		</view>
+		<view class="cu-form-group">
+			<view class="title">写入粘贴板</view>
+			<switch @change="switchClipboard" :class="selected.clipboard ? 'checked' : ''" :checked="selected.clipboard"></switch>
+		</view>
 		<view class="padding flex flex-direction">
 			<button class="cu-btn bg-blue lg shadow" @tap="generate">生 成</button>
 		</view>
@@ -74,7 +78,8 @@
 				selected: {
 					type: 0,
 					flag: false,
-					year: false
+					year: false,
+					clipboard: true
 				},
 				iptType: {
 					pwd: true,
@@ -136,19 +141,13 @@
 				});
 			},
 			readConf () {
-				let keys = [
-					{
-						name: 'type',
-						fn (res) {
-							return res.data >= 0 ? +res.data : 0;
-						}
-					},
-					{
-						name: 'year',
-						fn (res) {
-							return String(res.data) === 'true' ? true : false;
-						}
-					},
+				const boolKeys = ['year', 'flag', 'clipboard'];
+				const parseBool = (res) => String(res.data) === 'true';
+				const parseType = (res) => (res.data >= 0 ? +res.data : 0);
+				
+				const keys = [
+					{ name: 'type', fn: parseType },
+					...boolKeys.map((name) => ({ name, fn: parseBool }))
 				];
 				
 				keys.forEach((v) => {
@@ -179,10 +178,15 @@
 			},
 			switchFlag (e) {
 				this.selected.flag = e.detail.value;
+				this.writeConf('flag', this.selected.flag);
 			},
 			switchYear (e) {
 				this.selected.year = e.detail.value;
 				this.writeConf('year', this.selected.year);
+			},
+			switchClipboard (e) {
+				this.selected.clipboard = e.detail.value;
+				this.writeConf('clipboard', this.selected.clipboard);
 			},
 			async switchIptType (name) {
 				// app 和 微信启用生物认证
@@ -277,7 +281,11 @@
 			showPwd (pwd) {
 				let _this = this;
 				let len = pwd.length;
-				let desc = len > 6 ? (pwd.slice(0, len / 2) + ' ' + pwd.slice(len / 2)) : pwd;
+				let desc = len > 4 ? (pwd.slice(0, len / 2) + ' ' + pwd.slice(len / 2)) : pwd;
+				
+				if (!this.selected.clipboard) {
+					return this.showModal(`${desc}`);
+				}
 				
 				uni.setClipboardData({
 					data: pwd,
