@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easy-pwd-pwa-v2';
+const CACHE_NAME = 'easy-pwd-pwa-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +6,8 @@ const ASSETS = [
   './static/index.ed4a2d2b.css',
   './static/js/chunk-vendors.1f652273.js',
   './static/js/index.51216527.js',
+  './static/js/pages-about-index.6363215c.js',
+  './static/js/pages-index-index.e3b715d0.js',
   './static/logo.png',
   './static/images/tab/home.png',
   './static/images/tab/home-active.png',
